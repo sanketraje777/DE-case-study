@@ -1,0 +1,1 @@
+TRUNCATE TABLE dm.sales_order_item_flat RESTART IDENTITY CASCADE;
