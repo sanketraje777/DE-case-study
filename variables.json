@@ -1,0 +1,31 @@
+{
+  "mysql_conn": {
+    "user": "user",
+    "password": "db123",
+    "host": "db-mysql",
+    "db": "db",
+    "conn_id": "mysql_default"
+  },
+  "postgres_conn": {
+    "user": "postgres",
+    "password": "pg123",
+    "host": "db-postgres",
+    "database": "postgres",
+    "conn_id": "postgres_default"
+  },
+  "source_tables": "customer,salesorder,salesorderitem",
+  "lz_tables": "customer,salesorder,salesorderitem",
+  "ods_tables": "customer,salesorder,salesorderitem,product",
+  "dm_tables": "sales_order_item_flat",
+  "lz_schema": "lz",
+  "ods_schema": "ods",
+  "dm_schema": "dm",
+  "last_loaded_ts": "2021-07-06 00:00:00",
+  "testing": "true",
+  "chunk_size": "10000",
+  "min_chunk_size": "1000",
+  "min_chunk_minutes": "360",
+  "page_size": 1000,
+  "batch_size": "1000",
+  "datetime_interval": "1"
+}
