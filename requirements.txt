@@ -1,5 +1,0 @@
-# requirements.txt
-pyarrow>=10.0.1,<10.1.0
-# apache-airflow-providers-mysql
-# apache-airflow-providers-postgres
-# apache-airflow-providers-snowflake
