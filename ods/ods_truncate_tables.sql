@@ -1,0 +1,5 @@
+-- Truncate tables, respecting dependency order
+TRUNCATE TABLE ods.salesorderitem RESTART IDENTITY CASCADE;
+TRUNCATE TABLE ods.salesorder RESTART IDENTITY CASCADE;
+TRUNCATE TABLE ods.customer RESTART IDENTITY CASCADE;
+TRUNCATE TABLE ods.product RESTART IDENTITY CASCADE;
