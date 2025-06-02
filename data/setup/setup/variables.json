@@ -1,2 +1,0 @@
-{"mysql_conn" : { "user": "user", "password": "password", "host":"db-mysql", "db":"db" },
-"postgres_conn" : { "user": "postgres", "password": "password", "host":"db-postgres", "database":"postgres" }}
