@@ -1,3 +1,0 @@
-DROP TABLE IF EXISTS lz.salesorderitem CASCADE;
-DROP TABLE IF EXISTS lz.salesorder CASCADE;
-DROP TABLE IF EXISTS lz.customer CASCADE;
