@@ -137,7 +137,7 @@ cd ..
 or for powershell: `Get-Content sql\ddl_source.sql | mysql -h localhost -P 3307 -u root -p`
 4. Load DW, ODS, LZ SQL: 
 ```
-psql -h localhost -U postgres -d postgres -f sql/ddl_dw.sql
-psql -h localhost -U postgres -d postgres -f sql/ddl_ods.sql
-psql -h localhost -U postgres -d postgres -f sql/ddl_lz.sql
+psql -h localhost -U postgres -d data_warehouse -f sql/ddl_dw.sql
+psql -h localhost -U postgres -d data_warehouse -f sql/ddl_ods.sql
+psql -h localhost -U postgres -d data_warehouse -f sql/ddl_lz.sql
 ```
