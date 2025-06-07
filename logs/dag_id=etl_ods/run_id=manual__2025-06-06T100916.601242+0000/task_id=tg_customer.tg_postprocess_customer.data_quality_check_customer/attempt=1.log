@@ -1,0 +1,50 @@
+[2025-06-06T10:09:52.621+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:09:52.959+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_ods.tg_customer.tg_postprocess_customer.data_quality_check_customer manual__2025-06-06T10:09:16.601242+00:00 [queued]>
+[2025-06-06T10:09:52.974+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_ods.tg_customer.tg_postprocess_customer.data_quality_check_customer manual__2025-06-06T10:09:16.601242+00:00 [queued]>
+[2025-06-06T10:09:52.976+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:09:52.994+0000] {taskinstance.py:2330} INFO - Executing <Task(_PythonDecoratedOperator): tg_customer.tg_postprocess_customer.data_quality_check_customer> on 2025-06-06 10:09:16.601242+00:00
+[2025-06-06T10:09:53.008+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=515) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:09:53.011+0000] {standard_task_runner.py:63} INFO - Started process 520 to run task
+[2025-06-06T10:09:53.009+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_ods', 'tg_customer.tg_postprocess_customer.data_quality_check_customer', 'manual__2025-06-06T10:09:16.601242+00:00', '--job-id', '58', '--raw', '--subdir', 'DAGS_FOLDER/etl_ods/dag.py', '--cfg-path', '/tmp/tmph7y4gixq']
+[2025-06-06T10:09:53.014+0000] {standard_task_runner.py:91} INFO - Job 58: Subtask tg_customer.tg_postprocess_customer.data_quality_check_customer
+[2025-06-06T10:09:53.114+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_ods.tg_customer.tg_postprocess_customer.data_quality_check_customer manual__2025-06-06T10:09:16.601242+00:00 [running]> on host b168fc67a480
+[2025-06-06T10:09:53.291+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_ods' AIRFLOW_CTX_TASK_ID='tg_customer.tg_postprocess_customer.data_quality_check_customer' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T10:09:16.601242+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T10:09:16.601242+00:00'
+[2025-06-06T10:09:53.295+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:09:53.300+0000] {tasks.py:214} INFO - Loading SQL from file: /opt/airflow/sql/postgres_data_warehouse/ods/customer/ods_customer_data_quality_check.sql
+[2025-06-06T10:09:53.328+0000] {tasks.py:221} INFO - processed query: -- Check 1: Row counts
+SELECT 'customer' AS table_name, COUNT(*) AS row_count FROM ods.customer;
+
+-- Check 2: Critical columns NOT NULL
+SELECT COUNT(*) AS customer_email_nulls FROM ods.customer WHERE email IS NULL;
+SELECT COUNT(*) AS customer_shipping_address_nulls FROM ods.customer WHERE shipping_address IS NULL;, parameters: {'target_schema': 'ods', 'target_table': 'customer'}
+[2025-06-06T10:09:53.344+0000] {tasks.py:229} INFO - Split into 3 individual SQL statements
+[2025-06-06T10:09:53.345+0000] {tasks.py:233} INFO - Executing:
+-- Check 1: Row counts
+SELECT 'customer' AS table_name, COUNT(*) AS row_count FROM ods.customer;
+ with parameters: {'target_schema': 'ods', 'target_table': 'customer'}
+[2025-06-06T10:09:53.372+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:09:53.389+0000] {sql.py:470} INFO - Running statement: -- Check 1: Row counts
+SELECT 'customer' AS table_name, COUNT(*) AS row_count FROM ods.customer;, parameters: None
+[2025-06-06T10:09:53.392+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:09:53.394+0000] {tasks.py:240} INFO - Result: [('customer', 54)]
+[2025-06-06T10:09:53.396+0000] {tasks.py:233} INFO - Executing:
+-- Check 2: Critical columns NOT NULL
+SELECT COUNT(*) AS customer_email_nulls FROM ods.customer WHERE email IS NULL;
+ with parameters: {'target_schema': 'ods', 'target_table': 'customer'}
+[2025-06-06T10:09:53.413+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:09:53.423+0000] {sql.py:470} INFO - Running statement: -- Check 2: Critical columns NOT NULL
+SELECT COUNT(*) AS customer_email_nulls FROM ods.customer WHERE email IS NULL;, parameters: None
+[2025-06-06T10:09:53.427+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:09:53.429+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:09:53.430+0000] {tasks.py:233} INFO - Executing:
+SELECT COUNT(*) AS customer_shipping_address_nulls FROM ods.customer WHERE shipping_address IS NULL;
+ with parameters: {'target_schema': 'ods', 'target_table': 'customer'}
+[2025-06-06T10:09:53.446+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:09:53.457+0000] {sql.py:470} INFO - Running statement: SELECT COUNT(*) AS customer_shipping_address_nulls FROM ods.customer WHERE shipping_address IS NULL;, parameters: None
+[2025-06-06T10:09:53.461+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:09:53.463+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:09:53.464+0000] {python.py:237} INFO - Done. Returned value was: [[('customer', 54)], [(0,)], [(0,)]]
+[2025-06-06T10:09:53.466+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:09:53.517+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_ods, task_id=tg_customer.tg_postprocess_customer.data_quality_check_customer, run_id=manual__2025-06-06T10:09:16.601242+00:00, execution_date=20250606T100916, start_date=20250606T100952, end_date=20250606T100953
+[2025-06-06T10:09:53.591+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:09:53.619+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

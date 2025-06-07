@@ -1,0 +1,170 @@
+[2025-06-06T10:09:40.870+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:09:41.580+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_ods.tg_salesorder.tg_process_salesorder.process_salesorder manual__2025-06-06T10:09:16.601242+00:00 map_index=0 [queued]>
+[2025-06-06T10:09:41.655+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_ods.tg_salesorder.tg_process_salesorder.process_salesorder manual__2025-06-06T10:09:16.601242+00:00 map_index=0 [queued]>
+[2025-06-06T10:09:41.657+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:09:41.698+0000] {taskinstance.py:2330} INFO - Executing <Mapped(_PythonDecoratedOperator): tg_salesorder.tg_process_salesorder.process_salesorder> on 2025-06-06 10:09:16.601242+00:00
+[2025-06-06T10:09:41.720+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=460) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:09:41.723+0000] {standard_task_runner.py:63} INFO - Started process 473 to run task
+[2025-06-06T10:09:41.720+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_ods', 'tg_salesorder.tg_process_salesorder.process_salesorder', 'manual__2025-06-06T10:09:16.601242+00:00', '--job-id', '52', '--raw', '--subdir', 'DAGS_FOLDER/etl_ods/dag.py', '--cfg-path', '/tmp/tmptvs0wi3y', '--map-index', '0']
+[2025-06-06T10:09:41.728+0000] {standard_task_runner.py:91} INFO - Job 52: Subtask tg_salesorder.tg_process_salesorder.process_salesorder
+[2025-06-06T10:09:41.882+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_ods.tg_salesorder.tg_process_salesorder.process_salesorder manual__2025-06-06T10:09:16.601242+00:00 map_index=0 [running]> on host b168fc67a480
+[2025-06-06T10:09:42.250+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_ods' AIRFLOW_CTX_TASK_ID='tg_salesorder.tg_process_salesorder.process_salesorder' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T10:09:16.601242+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T10:09:16.601242+00:00'
+[2025-06-06T10:09:42.256+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:09:42.267+0000] {tasks.py:214} INFO - Loading SQL from file: /opt/airflow/sql/postgres_data_warehouse/ods/salesorder/ods_process_salesorder.sql
+[2025-06-06T10:09:42.321+0000] {tasks.py:221} INFO - processed query: DO $$
+DECLARE
+  clean_pattern TEXT := '([[:cntrl:]]|Â| )+';  -- ([[:cntrl:]]|Â| )+ regex pattern to remove unwanted characters
+BEGIN
+
+WITH latest_per_id AS NOT MATERIALIZED (
+  SELECT DISTINCT ON (id)
+    id,
+    customer_id,
+    TRIM(REGEXP_REPLACE(order_number, clean_pattern, '', 'g')) AS order_number,
+    created_at,
+    modified_at,
+    order_total,
+    total_qty_ordered
+  FROM lz.salesorder   -- lz.salesorder
+  WHERE id IS NOT NULL
+    AND customer_id IS NOT NULL
+    AND order_number IS NOT NULL
+    AND created_at IS NOT NULL
+    AND modified_at IS NOT NULL AND modified_at >= created_at
+    AND order_total IS NOT NULL AND order_total >= 0
+    AND total_qty_ordered IS NOT NULL AND total_qty_ordered >= 0
+    AND TRIM(REGEXP_REPLACE(order_number, clean_pattern, '', 'g'))::VARCHAR(50) <> ''
+  ORDER BY id, modified_at DESC
+),
+latest_per_order_number AS NOT MATERIALIZED (
+  SELECT DISTINCT ON (order_number)
+    id,
+    customer_id,
+    order_number::VARCHAR(50),
+    created_at,
+    modified_at,
+    order_total::NUMERIC(10,2),
+    total_qty_ordered
+  FROM latest_per_id
+  ORDER BY order_number, modified_at DESC
+)
+INSERT INTO ods.salesorder (
+  id, customer_id, order_number,
+  created_at, modified_at,
+  order_total, total_qty_ordered
+)
+SELECT
+  id, customer_id, order_number,
+  created_at, modified_at,
+  order_total, total_qty_ordered
+FROM latest_per_order_number;
+
+END $$;, parameters: {'var_text_clean_regex': '([[:cntrl:]]|Â|\xa0)+', 'source_schema': 'lz', 'source_table': 'salesorder', 'target_schema': 'ods', 'target_table': 'salesorder'}
+[2025-06-06T10:09:42.363+0000] {tasks.py:229} INFO - Split into 1 individual SQL statements
+[2025-06-06T10:09:42.365+0000] {tasks.py:233} INFO - Executing:
+DO $$
+DECLARE
+  clean_pattern TEXT := '([[:cntrl:]]|Â| )+';  -- ([[:cntrl:]]|Â| )+ regex pattern to remove unwanted characters
+BEGIN
+
+WITH latest_per_id AS NOT MATERIALIZED (
+  SELECT DISTINCT ON (id)
+    id,
+    customer_id,
+    TRIM(REGEXP_REPLACE(order_number, clean_pattern, '', 'g')) AS order_number,
+    created_at,
+    modified_at,
+    order_total,
+    total_qty_ordered
+  FROM lz.salesorder   -- lz.salesorder
+  WHERE id IS NOT NULL
+    AND customer_id IS NOT NULL
+    AND order_number IS NOT NULL
+    AND created_at IS NOT NULL
+    AND modified_at IS NOT NULL AND modified_at >= created_at
+    AND order_total IS NOT NULL AND order_total >= 0
+    AND total_qty_ordered IS NOT NULL AND total_qty_ordered >= 0
+    AND TRIM(REGEXP_REPLACE(order_number, clean_pattern, '', 'g'))::VARCHAR(50) <> ''
+  ORDER BY id, modified_at DESC
+),
+latest_per_order_number AS NOT MATERIALIZED (
+  SELECT DISTINCT ON (order_number)
+    id,
+    customer_id,
+    order_number::VARCHAR(50),
+    created_at,
+    modified_at,
+    order_total::NUMERIC(10,2),
+    total_qty_ordered
+  FROM latest_per_id
+  ORDER BY order_number, modified_at DESC
+)
+INSERT INTO ods.salesorder (
+  id, customer_id, order_number,
+  created_at, modified_at,
+  order_total, total_qty_ordered
+)
+SELECT
+  id, customer_id, order_number,
+  created_at, modified_at,
+  order_total, total_qty_ordered
+FROM latest_per_order_number;
+
+END $$;
+ with parameters: {'var_text_clean_regex': '([[:cntrl:]]|Â|\xa0)+', 'source_schema': 'lz', 'source_table': 'salesorder', 'target_schema': 'ods', 'target_table': 'salesorder'}
+[2025-06-06T10:09:42.425+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:09:42.456+0000] {sql.py:470} INFO - Running statement: DO $$
+DECLARE
+  clean_pattern TEXT := '([[:cntrl:]]|Â| )+';  -- ([[:cntrl:]]|Â| )+ regex pattern to remove unwanted characters
+BEGIN
+
+WITH latest_per_id AS NOT MATERIALIZED (
+  SELECT DISTINCT ON (id)
+    id,
+    customer_id,
+    TRIM(REGEXP_REPLACE(order_number, clean_pattern, '', 'g')) AS order_number,
+    created_at,
+    modified_at,
+    order_total,
+    total_qty_ordered
+  FROM lz.salesorder   -- lz.salesorder
+  WHERE id IS NOT NULL
+    AND customer_id IS NOT NULL
+    AND order_number IS NOT NULL
+    AND created_at IS NOT NULL
+    AND modified_at IS NOT NULL AND modified_at >= created_at
+    AND order_total IS NOT NULL AND order_total >= 0
+    AND total_qty_ordered IS NOT NULL AND total_qty_ordered >= 0
+    AND TRIM(REGEXP_REPLACE(order_number, clean_pattern, '', 'g'))::VARCHAR(50) <> ''
+  ORDER BY id, modified_at DESC
+),
+latest_per_order_number AS NOT MATERIALIZED (
+  SELECT DISTINCT ON (order_number)
+    id,
+    customer_id,
+    order_number::VARCHAR(50),
+    created_at,
+    modified_at,
+    order_total::NUMERIC(10,2),
+    total_qty_ordered
+  FROM latest_per_id
+  ORDER BY order_number, modified_at DESC
+)
+INSERT INTO ods.salesorder (
+  id, customer_id, order_number,
+  created_at, modified_at,
+  order_total, total_qty_ordered
+)
+SELECT
+  id, customer_id, order_number,
+  created_at, modified_at,
+  order_total, total_qty_ordered
+FROM latest_per_order_number;
+
+END $$;, parameters: None
+[2025-06-06T10:09:42.707+0000] {python.py:237} INFO - Done. Returned value was: [None]
+[2025-06-06T10:09:42.712+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:09:42.804+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_ods, task_id=tg_salesorder.tg_process_salesorder.process_salesorder, run_id=manual__2025-06-06T10:09:16.601242+00:00, map_index=0, execution_date=20250606T100916, start_date=20250606T100941, end_date=20250606T100942
+[2025-06-06T10:09:42.888+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:09:43.125+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-06-06T10:09:43.132+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

@@ -1,0 +1,50 @@
+[2025-06-06T10:10:06.081+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:10:06.320+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_ods.tg_salesorderitem.tg_postprocess_salesorderitem.mark_last_loaded_salesorderitem manual__2025-06-06T10:09:16.601242+00:00 [queued]>
+[2025-06-06T10:10:06.346+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_ods.tg_salesorderitem.tg_postprocess_salesorderitem.mark_last_loaded_salesorderitem manual__2025-06-06T10:09:16.601242+00:00 [queued]>
+[2025-06-06T10:10:06.348+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:10:06.374+0000] {taskinstance.py:2330} INFO - Executing <Task(_PythonDecoratedOperator): tg_salesorderitem.tg_postprocess_salesorderitem.mark_last_loaded_salesorderitem> on 2025-06-06 10:09:16.601242+00:00
+[2025-06-06T10:10:06.389+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=544) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:10:06.392+0000] {standard_task_runner.py:63} INFO - Started process 546 to run task
+[2025-06-06T10:10:06.389+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_ods', 'tg_salesorderitem.tg_postprocess_salesorderitem.mark_last_loaded_salesorderitem', 'manual__2025-06-06T10:09:16.601242+00:00', '--job-id', '68', '--raw', '--subdir', 'DAGS_FOLDER/etl_ods/dag.py', '--cfg-path', '/tmp/tmpodgiccob']
+[2025-06-06T10:10:06.393+0000] {standard_task_runner.py:91} INFO - Job 68: Subtask tg_salesorderitem.tg_postprocess_salesorderitem.mark_last_loaded_salesorderitem
+[2025-06-06T10:10:06.481+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_ods.tg_salesorderitem.tg_postprocess_salesorderitem.mark_last_loaded_salesorderitem manual__2025-06-06T10:09:16.601242+00:00 [running]> on host b168fc67a480
+[2025-06-06T10:10:06.643+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_ods' AIRFLOW_CTX_TASK_ID='tg_salesorderitem.tg_postprocess_salesorderitem.mark_last_loaded_salesorderitem' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T10:09:16.601242+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T10:09:16.601242+00:00'
+[2025-06-06T10:10:06.646+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:10:06.650+0000] {tasks.py:214} INFO - Loading SQL from file: /opt/airflow/sql/postgres_data_warehouse/insert_load_audit.sql
+[2025-06-06T10:10:06.669+0000] {tasks.py:229} INFO - Split into 1 individual SQL statements
+[2025-06-06T10:10:06.670+0000] {tasks.py:233} INFO - Executing:
+INSERT INTO public.load_audit (table_name, last_loaded, data_quality)
+VALUES
+    (%s, NOW(), %s)
+ON CONFLICT (table_name) DO UPDATE
+SET 
+    last_loaded = EXCLUDED.last_loaded,
+    data_quality = EXCLUDED.data_quality
+WHERE (
+    public.load_audit.last_loaded,
+    public.load_audit.data_quality) 
+IS DISTINCT FROM (
+    EXCLUDED.last_loaded,
+    EXCLUDED.data_quality);
+ with parameters: ('ods.salesorderitem', "[[['salesorderitem', 7684]], [[0]], [[0]], [[0]], [[0]], [[0]]]")
+[2025-06-06T10:10:06.684+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:06.691+0000] {sql.py:470} INFO - Running statement: INSERT INTO public.load_audit (table_name, last_loaded, data_quality)
+VALUES
+    (%s, NOW(), %s)
+ON CONFLICT (table_name) DO UPDATE
+SET 
+    last_loaded = EXCLUDED.last_loaded,
+    data_quality = EXCLUDED.data_quality
+WHERE (
+    public.load_audit.last_loaded,
+    public.load_audit.data_quality) 
+IS DISTINCT FROM (
+    EXCLUDED.last_loaded,
+    EXCLUDED.data_quality);, parameters: ('ods.salesorderitem', "[[['salesorderitem', 7684]], [[0]], [[0]], [[0]], [[0]], [[0]]]")
+[2025-06-06T10:10:06.693+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:06.697+0000] {python.py:237} INFO - Done. Returned value was: [None]
+[2025-06-06T10:10:06.698+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:10:06.734+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_ods, task_id=tg_salesorderitem.tg_postprocess_salesorderitem.mark_last_loaded_salesorderitem, run_id=manual__2025-06-06T10:09:16.601242+00:00, execution_date=20250606T100916, start_date=20250606T101006, end_date=20250606T101006
+[2025-06-06T10:10:06.770+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:10:06.801+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-06-06T10:10:06.805+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

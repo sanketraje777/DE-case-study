@@ -1,0 +1,89 @@
+[2025-06-06T10:10:21.449+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:10:21.512+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_dm.tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.add_constraints_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 [queued]>
+[2025-06-06T10:10:21.526+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_dm.tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.add_constraints_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 [queued]>
+[2025-06-06T10:10:21.527+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:10:21.738+0000] {taskinstance.py:2330} INFO - Executing <Task(_PythonDecoratedOperator): tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.add_constraints_sales_order_item_flat> on 2025-06-06 10:10:09.043719+00:00
+[2025-06-06T10:10:21.756+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=597) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:10:21.758+0000] {standard_task_runner.py:63} INFO - Started process 599 to run task
+[2025-06-06T10:10:21.755+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_dm', 'tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.add_constraints_sales_order_item_flat', 'manual__2025-06-06T10:10:09.043719+00:00', '--job-id', '74', '--raw', '--subdir', 'DAGS_FOLDER/etl_datamart/dag.py', '--cfg-path', '/tmp/tmpvwngymnz']
+[2025-06-06T10:10:21.759+0000] {standard_task_runner.py:91} INFO - Job 74: Subtask tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.add_constraints_sales_order_item_flat
+[2025-06-06T10:10:21.859+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_dm.tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.add_constraints_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 [running]> on host b168fc67a480
+[2025-06-06T10:10:22.021+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_dm' AIRFLOW_CTX_TASK_ID='tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.add_constraints_sales_order_item_flat' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T10:10:09.043719+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T10:10:09.043719+00:00'
+[2025-06-06T10:10:22.023+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:10:22.028+0000] {tasks.py:214} INFO - Loading SQL from file: /opt/airflow/sql/postgres_data_warehouse/dm/sales_order_item_flat/dm_create_sales_order_item_flat_constraints_indexes.sql
+[2025-06-06T10:10:22.055+0000] {tasks.py:221} INFO - processed query: ALTER TABLE dm.sales_order_item_flat    -- dm.sales_order_item_flat 
+    ADD CONSTRAINT sales_order_item_flat_pkey 
+        PRIMARY KEY (item_id, order_id);
+ALTER TABLE dm.sales_order_item_flat
+    ADD CONSTRAINT sales_order_item_flat_customer_email_check 
+        CHECK (customer_email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_order_number 
+    ON dm.sales_order_item_flat (order_number);
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_customer_id 
+    ON dm.sales_order_item_flat (customer_id);
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_product_id 
+    ON dm.sales_order_item_flat (product_id);
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_order_created_at 
+    ON dm.sales_order_item_flat (order_created_at);
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_product_sku 
+    ON dm.sales_order_item_flat (product_sku);, parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:22.071+0000] {tasks.py:229} INFO - Split into 7 individual SQL statements
+[2025-06-06T10:10:22.072+0000] {tasks.py:233} INFO - Executing:
+ALTER TABLE dm.sales_order_item_flat    -- dm.sales_order_item_flat 
+    ADD CONSTRAINT sales_order_item_flat_pkey 
+        PRIMARY KEY (item_id, order_id);
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:22.088+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:22.093+0000] {sql.py:470} INFO - Running statement: ALTER TABLE dm.sales_order_item_flat    -- dm.sales_order_item_flat 
+    ADD CONSTRAINT sales_order_item_flat_pkey 
+        PRIMARY KEY (item_id, order_id);, parameters: None
+[2025-06-06T10:10:22.172+0000] {tasks.py:233} INFO - Executing:
+ALTER TABLE dm.sales_order_item_flat
+    ADD CONSTRAINT sales_order_item_flat_customer_email_check 
+        CHECK (customer_email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:22.180+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:22.185+0000] {sql.py:470} INFO - Running statement: ALTER TABLE dm.sales_order_item_flat
+    ADD CONSTRAINT sales_order_item_flat_customer_email_check 
+        CHECK (customer_email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');, parameters: None
+[2025-06-06T10:10:22.208+0000] {tasks.py:233} INFO - Executing:
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_order_number 
+    ON dm.sales_order_item_flat (order_number);
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:22.217+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:22.223+0000] {sql.py:470} INFO - Running statement: CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_order_number 
+    ON dm.sales_order_item_flat (order_number);, parameters: None
+[2025-06-06T10:10:22.318+0000] {tasks.py:233} INFO - Executing:
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_customer_id 
+    ON dm.sales_order_item_flat (customer_id);
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:22.325+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:22.331+0000] {sql.py:470} INFO - Running statement: CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_customer_id 
+    ON dm.sales_order_item_flat (customer_id);, parameters: None
+[2025-06-06T10:10:22.404+0000] {tasks.py:233} INFO - Executing:
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_product_id 
+    ON dm.sales_order_item_flat (product_id);
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:22.412+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:22.417+0000] {sql.py:470} INFO - Running statement: CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_product_id 
+    ON dm.sales_order_item_flat (product_id);, parameters: None
+[2025-06-06T10:10:22.497+0000] {tasks.py:233} INFO - Executing:
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_order_created_at 
+    ON dm.sales_order_item_flat (order_created_at);
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:22.505+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:22.511+0000] {sql.py:470} INFO - Running statement: CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_order_created_at 
+    ON dm.sales_order_item_flat (order_created_at);, parameters: None
+[2025-06-06T10:10:22.594+0000] {tasks.py:233} INFO - Executing:
+CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_product_sku 
+    ON dm.sales_order_item_flat (product_sku);
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:22.604+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:22.610+0000] {sql.py:470} INFO - Running statement: CREATE INDEX IF NOT EXISTS idx_sales_order_item_flat_product_sku 
+    ON dm.sales_order_item_flat (product_sku);, parameters: None
+[2025-06-06T10:10:22.707+0000] {python.py:237} INFO - Done. Returned value was: [None, None, None, None, None, None, None]
+[2025-06-06T10:10:22.708+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:10:22.739+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_dm, task_id=tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.add_constraints_sales_order_item_flat, run_id=manual__2025-06-06T10:10:09.043719+00:00, execution_date=20250606T101009, start_date=20250606T101021, end_date=20250606T101022
+[2025-06-06T10:10:22.778+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:10:22.822+0000] {taskinstance.py:3498} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-06-06T10:10:22.825+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

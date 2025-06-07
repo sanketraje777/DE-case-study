@@ -1,0 +1,21 @@
+[2025-06-06T10:08:45.958+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:08:46.642+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_landing.tg_customer.tg_preprocess_customer.deindex_target_customer scheduled__2025-06-05T00:00:00+00:00 [queued]>
+[2025-06-06T10:08:46.688+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_landing.tg_customer.tg_preprocess_customer.deindex_target_customer scheduled__2025-06-05T00:00:00+00:00 [queued]>
+[2025-06-06T10:08:46.691+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:08:46.745+0000] {taskinstance.py:2330} INFO - Executing <Task(SQLExecuteQueryOperator): tg_customer.tg_preprocess_customer.deindex_target_customer> on 2025-06-05 00:00:00+00:00
+[2025-06-06T10:08:46.772+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=313) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:08:46.777+0000] {standard_task_runner.py:63} INFO - Started process 321 to run task
+[2025-06-06T10:08:46.773+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_landing', 'tg_customer.tg_preprocess_customer.deindex_target_customer', 'scheduled__2025-06-05T00:00:00+00:00', '--job-id', '15', '--raw', '--subdir', 'DAGS_FOLDER/etl_landing/dag.py', '--cfg-path', '/tmp/tmpl0i1p5le']
+[2025-06-06T10:08:46.782+0000] {standard_task_runner.py:91} INFO - Job 15: Subtask tg_customer.tg_preprocess_customer.deindex_target_customer
+[2025-06-06T10:08:46.929+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_landing.tg_customer.tg_preprocess_customer.deindex_target_customer scheduled__2025-06-05T00:00:00+00:00 [running]> on host b168fc67a480
+[2025-06-06T10:08:47.288+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_landing' AIRFLOW_CTX_TASK_ID='tg_customer.tg_preprocess_customer.deindex_target_customer' AIRFLOW_CTX_EXECUTION_DATE='2025-06-05T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-06-05T00:00:00+00:00'
+[2025-06-06T10:08:47.294+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:08:47.297+0000] {sql.py:276} INFO - Executing: SELECT drop_special_constraints_and_indexes('lz', 'customer', ARRAY[]::text[]);
+[2025-06-06T10:08:47.328+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:08:47.355+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:08:47.373+0000] {sql.py:470} INFO - Running statement: SELECT drop_special_constraints_and_indexes('lz', 'customer', ARRAY[]::text[]);, parameters: None
+[2025-06-06T10:08:47.416+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:08:47.427+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:08:47.523+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_landing, task_id=tg_customer.tg_preprocess_customer.deindex_target_customer, run_id=scheduled__2025-06-05T00:00:00+00:00, execution_date=20250605T000000, start_date=20250606T100846, end_date=20250606T100847
+[2025-06-06T10:08:47.601+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:08:47.639+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

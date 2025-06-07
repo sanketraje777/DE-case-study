@@ -1,0 +1,49 @@
+[2025-06-06T10:09:52.620+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:09:52.968+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_ods.tg_product.tg_postprocess_product.mark_last_loaded_product manual__2025-06-06T10:09:16.601242+00:00 [queued]>
+[2025-06-06T10:09:52.984+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_ods.tg_product.tg_postprocess_product.mark_last_loaded_product manual__2025-06-06T10:09:16.601242+00:00 [queued]>
+[2025-06-06T10:09:52.985+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:09:53.005+0000] {taskinstance.py:2330} INFO - Executing <Task(_PythonDecoratedOperator): tg_product.tg_postprocess_product.mark_last_loaded_product> on 2025-06-06 10:09:16.601242+00:00
+[2025-06-06T10:09:53.018+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=516) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:09:53.021+0000] {standard_task_runner.py:63} INFO - Started process 521 to run task
+[2025-06-06T10:09:53.018+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_ods', 'tg_product.tg_postprocess_product.mark_last_loaded_product', 'manual__2025-06-06T10:09:16.601242+00:00', '--job-id', '59', '--raw', '--subdir', 'DAGS_FOLDER/etl_ods/dag.py', '--cfg-path', '/tmp/tmpsf1glahw']
+[2025-06-06T10:09:53.023+0000] {standard_task_runner.py:91} INFO - Job 59: Subtask tg_product.tg_postprocess_product.mark_last_loaded_product
+[2025-06-06T10:09:53.123+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_ods.tg_product.tg_postprocess_product.mark_last_loaded_product manual__2025-06-06T10:09:16.601242+00:00 [running]> on host b168fc67a480
+[2025-06-06T10:09:53.313+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_ods' AIRFLOW_CTX_TASK_ID='tg_product.tg_postprocess_product.mark_last_loaded_product' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T10:09:16.601242+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T10:09:16.601242+00:00'
+[2025-06-06T10:09:53.317+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:09:53.321+0000] {tasks.py:214} INFO - Loading SQL from file: /opt/airflow/sql/postgres_data_warehouse/insert_load_audit.sql
+[2025-06-06T10:09:53.343+0000] {tasks.py:229} INFO - Split into 1 individual SQL statements
+[2025-06-06T10:09:53.344+0000] {tasks.py:233} INFO - Executing:
+INSERT INTO public.load_audit (table_name, last_loaded, data_quality)
+VALUES
+    (%s, NOW(), %s)
+ON CONFLICT (table_name) DO UPDATE
+SET 
+    last_loaded = EXCLUDED.last_loaded,
+    data_quality = EXCLUDED.data_quality
+WHERE (
+    public.load_audit.last_loaded,
+    public.load_audit.data_quality) 
+IS DISTINCT FROM (
+    EXCLUDED.last_loaded,
+    EXCLUDED.data_quality);
+ with parameters: ('ods.product', "[[['product', 4297]], [[0]], [[0]], []]")
+[2025-06-06T10:09:53.367+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:09:53.384+0000] {sql.py:470} INFO - Running statement: INSERT INTO public.load_audit (table_name, last_loaded, data_quality)
+VALUES
+    (%s, NOW(), %s)
+ON CONFLICT (table_name) DO UPDATE
+SET 
+    last_loaded = EXCLUDED.last_loaded,
+    data_quality = EXCLUDED.data_quality
+WHERE (
+    public.load_audit.last_loaded,
+    public.load_audit.data_quality) 
+IS DISTINCT FROM (
+    EXCLUDED.last_loaded,
+    EXCLUDED.data_quality);, parameters: ('ods.product', "[[['product', 4297]], [[0]], [[0]], []]")
+[2025-06-06T10:09:53.388+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:09:53.392+0000] {python.py:237} INFO - Done. Returned value was: [None]
+[2025-06-06T10:09:53.393+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:09:53.445+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_ods, task_id=tg_product.tg_postprocess_product.mark_last_loaded_product, run_id=manual__2025-06-06T10:09:16.601242+00:00, execution_date=20250606T100916, start_date=20250606T100952, end_date=20250606T100953
+[2025-06-06T10:09:53.520+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:09:53.540+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

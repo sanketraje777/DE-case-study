@@ -1,0 +1,99 @@
+[2025-06-06T10:10:25.054+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:10:25.119+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_dm.tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.data_quality_check_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 [queued]>
+[2025-06-06T10:10:25.135+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_dm.tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.data_quality_check_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 [queued]>
+[2025-06-06T10:10:25.136+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:10:25.318+0000] {taskinstance.py:2330} INFO - Executing <Task(_PythonDecoratedOperator): tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.data_quality_check_sales_order_item_flat> on 2025-06-06 10:10:09.043719+00:00
+[2025-06-06T10:10:25.328+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=600) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:10:25.329+0000] {standard_task_runner.py:63} INFO - Started process 602 to run task
+[2025-06-06T10:10:25.328+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_dm', 'tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.data_quality_check_sales_order_item_flat', 'manual__2025-06-06T10:10:09.043719+00:00', '--job-id', '75', '--raw', '--subdir', 'DAGS_FOLDER/etl_datamart/dag.py', '--cfg-path', '/tmp/tmp6xwvqvfc']
+[2025-06-06T10:10:25.331+0000] {standard_task_runner.py:91} INFO - Job 75: Subtask tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.data_quality_check_sales_order_item_flat
+[2025-06-06T10:10:25.394+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_dm.tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.data_quality_check_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 [running]> on host b168fc67a480
+[2025-06-06T10:10:25.524+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_dm' AIRFLOW_CTX_TASK_ID='tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.data_quality_check_sales_order_item_flat' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T10:10:09.043719+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T10:10:09.043719+00:00'
+[2025-06-06T10:10:25.526+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:10:25.533+0000] {tasks.py:214} INFO - Loading SQL from file: /opt/airflow/sql/postgres_data_warehouse/dm/sales_order_item_flat/dm_sales_order_item_flat_data_quality_check.sql
+[2025-06-06T10:10:25.569+0000] {tasks.py:221} INFO - processed query: -- Check 1: Row counts
+SELECT 'sales_order_item_flat' AS table_name, COUNT(*) AS row_count FROM dm.sales_order_item_flat;
+
+-- Check 2: Critical columns NOT NULL
+SELECT COUNT(*) AS sales_order_item_flat_order_number_nulls FROM dm.sales_order_item_flat WHERE order_number IS NULL;
+SELECT COUNT(*) AS sales_order_item_flat_order_created_at_nulls FROM dm.sales_order_item_flat WHERE order_created_at IS NULL;
+SELECT COUNT(*) AS sales_order_item_flat_customer_email_nulls FROM dm.sales_order_item_flat WHERE customer_email IS NULL;
+SELECT COUNT(*) AS sales_order_item_flat_product_sku_nulls FROM dm.sales_order_item_flat WHERE product_sku IS NULL;
+SELECT COUNT(*) AS sales_order_item_flat_product_name_nulls FROM dm.sales_order_item_flat WHERE product_name IS NULL;
+SELECT COUNT(*) AS sales_order_item_flat_item_price_negative FROM dm.sales_order_item_flat WHERE item_price < 0;
+SELECT COUNT(*) AS sales_order_item_flat_item_qty_order_negative FROM dm.sales_order_item_flat WHERE item_qty_order < 0;
+SELECT COUNT(*) AS sales_order_item_flat_item_unit_total_negative FROM dm.sales_order_item_flat WHERE item_unit_total < 0;, parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.586+0000] {tasks.py:229} INFO - Split into 9 individual SQL statements
+[2025-06-06T10:10:25.587+0000] {tasks.py:233} INFO - Executing:
+-- Check 1: Row counts
+SELECT 'sales_order_item_flat' AS table_name, COUNT(*) AS row_count FROM dm.sales_order_item_flat;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.603+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.609+0000] {sql.py:470} INFO - Running statement: -- Check 1: Row counts
+SELECT 'sales_order_item_flat' AS table_name, COUNT(*) AS row_count FROM dm.sales_order_item_flat;, parameters: None
+[2025-06-06T10:10:25.620+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.622+0000] {tasks.py:240} INFO - Result: [('sales_order_item_flat', 7684)]
+[2025-06-06T10:10:25.623+0000] {tasks.py:233} INFO - Executing:
+-- Check 2: Critical columns NOT NULL
+SELECT COUNT(*) AS sales_order_item_flat_order_number_nulls FROM dm.sales_order_item_flat WHERE order_number IS NULL;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.634+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.640+0000] {sql.py:470} INFO - Running statement: -- Check 2: Critical columns NOT NULL
+SELECT COUNT(*) AS sales_order_item_flat_order_number_nulls FROM dm.sales_order_item_flat WHERE order_number IS NULL;, parameters: None
+[2025-06-06T10:10:25.647+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.649+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:10:25.650+0000] {tasks.py:233} INFO - Executing:
+SELECT COUNT(*) AS sales_order_item_flat_order_created_at_nulls FROM dm.sales_order_item_flat WHERE order_created_at IS NULL;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.659+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.667+0000] {sql.py:470} INFO - Running statement: SELECT COUNT(*) AS sales_order_item_flat_order_created_at_nulls FROM dm.sales_order_item_flat WHERE order_created_at IS NULL;, parameters: None
+[2025-06-06T10:10:25.674+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.676+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:10:25.676+0000] {tasks.py:233} INFO - Executing:
+SELECT COUNT(*) AS sales_order_item_flat_customer_email_nulls FROM dm.sales_order_item_flat WHERE customer_email IS NULL;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.686+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.691+0000] {sql.py:470} INFO - Running statement: SELECT COUNT(*) AS sales_order_item_flat_customer_email_nulls FROM dm.sales_order_item_flat WHERE customer_email IS NULL;, parameters: None
+[2025-06-06T10:10:25.699+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.700+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:10:25.701+0000] {tasks.py:233} INFO - Executing:
+SELECT COUNT(*) AS sales_order_item_flat_product_sku_nulls FROM dm.sales_order_item_flat WHERE product_sku IS NULL;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.711+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.718+0000] {sql.py:470} INFO - Running statement: SELECT COUNT(*) AS sales_order_item_flat_product_sku_nulls FROM dm.sales_order_item_flat WHERE product_sku IS NULL;, parameters: None
+[2025-06-06T10:10:25.726+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.728+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:10:25.729+0000] {tasks.py:233} INFO - Executing:
+SELECT COUNT(*) AS sales_order_item_flat_product_name_nulls FROM dm.sales_order_item_flat WHERE product_name IS NULL;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.740+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.749+0000] {sql.py:470} INFO - Running statement: SELECT COUNT(*) AS sales_order_item_flat_product_name_nulls FROM dm.sales_order_item_flat WHERE product_name IS NULL;, parameters: None
+[2025-06-06T10:10:25.759+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.761+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:10:25.763+0000] {tasks.py:233} INFO - Executing:
+SELECT COUNT(*) AS sales_order_item_flat_item_price_negative FROM dm.sales_order_item_flat WHERE item_price < 0;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.776+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.784+0000] {sql.py:470} INFO - Running statement: SELECT COUNT(*) AS sales_order_item_flat_item_price_negative FROM dm.sales_order_item_flat WHERE item_price < 0;, parameters: None
+[2025-06-06T10:10:25.793+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.795+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:10:25.796+0000] {tasks.py:233} INFO - Executing:
+SELECT COUNT(*) AS sales_order_item_flat_item_qty_order_negative FROM dm.sales_order_item_flat WHERE item_qty_order < 0;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.808+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.814+0000] {sql.py:470} INFO - Running statement: SELECT COUNT(*) AS sales_order_item_flat_item_qty_order_negative FROM dm.sales_order_item_flat WHERE item_qty_order < 0;, parameters: None
+[2025-06-06T10:10:25.823+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.825+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:10:25.826+0000] {tasks.py:233} INFO - Executing:
+SELECT COUNT(*) AS sales_order_item_flat_item_unit_total_negative FROM dm.sales_order_item_flat WHERE item_unit_total < 0;
+ with parameters: {'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:25.837+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:25.844+0000] {sql.py:470} INFO - Running statement: SELECT COUNT(*) AS sales_order_item_flat_item_unit_total_negative FROM dm.sales_order_item_flat WHERE item_unit_total < 0;, parameters: None
+[2025-06-06T10:10:25.853+0000] {sql.py:479} INFO - Rows affected: 1
+[2025-06-06T10:10:25.855+0000] {tasks.py:240} INFO - Result: [(0,)]
+[2025-06-06T10:10:25.856+0000] {python.py:237} INFO - Done. Returned value was: [[('sales_order_item_flat', 7684)], [(0,)], [(0,)], [(0,)], [(0,)], [(0,)], [(0,)], [(0,)], [(0,)]]
+[2025-06-06T10:10:25.858+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:10:25.903+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_dm, task_id=tg_sales_order_item_flat.tg_postprocess_sales_order_item_flat.data_quality_check_sales_order_item_flat, run_id=manual__2025-06-06T10:10:09.043719+00:00, execution_date=20250606T101009, start_date=20250606T101025, end_date=20250606T101025
+[2025-06-06T10:10:25.946+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:10:25.996+0000] {taskinstance.py:3498} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-06-06T10:10:26.000+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

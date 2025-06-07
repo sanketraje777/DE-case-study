@@ -1,0 +1,19 @@
+[2025-06-06T10:08:30.915+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:08:31.241+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_landing.get_load_range scheduled__2025-06-05T00:00:00+00:00 [queued]>
+[2025-06-06T10:08:31.253+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_landing.get_load_range scheduled__2025-06-05T00:00:00+00:00 [queued]>
+[2025-06-06T10:08:31.254+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:08:31.270+0000] {taskinstance.py:2330} INFO - Executing <Task(_PythonDecoratedOperator): get_load_range> on 2025-06-05 00:00:00+00:00
+[2025-06-06T10:08:31.282+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=240) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:08:31.281+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_landing', 'get_load_range', 'scheduled__2025-06-05T00:00:00+00:00', '--job-id', '2', '--raw', '--subdir', 'DAGS_FOLDER/etl_landing/dag.py', '--cfg-path', '/tmp/tmpxa3n49_y']
+[2025-06-06T10:08:31.284+0000] {standard_task_runner.py:63} INFO - Started process 244 to run task
+[2025-06-06T10:08:31.285+0000] {standard_task_runner.py:91} INFO - Job 2: Subtask get_load_range
+[2025-06-06T10:08:31.368+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_landing.get_load_range scheduled__2025-06-05T00:00:00+00:00 [running]> on host b168fc67a480
+[2025-06-06T10:08:31.519+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_landing' AIRFLOW_CTX_TASK_ID='get_load_range' AIRFLOW_CTX_EXECUTION_DATE='2025-06-05T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-06-05T00:00:00+00:00'
+[2025-06-06T10:08:31.523+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:08:31.551+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/utils/context.py:212 AirflowContextDeprecationWarning: Accessing 'execution_date' from the template is deprecated and will be removed in a future version. Please use 'data_interval_start' or 'logical_date' instead.
+[2025-06-06T10:08:31.564+0000] {python.py:237} INFO - Done. Returned value was: {'start_time': datetime.datetime(2021, 7, 6, 0, 0), 'end_time': datetime.datetime(2021, 7, 7, 0, 0)}
+[2025-06-06T10:08:31.565+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:08:31.603+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_landing, task_id=get_load_range, run_id=scheduled__2025-06-05T00:00:00+00:00, execution_date=20250605T000000, start_date=20250606T100831, end_date=20250606T100831
+[2025-06-06T10:08:31.662+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:08:31.747+0000] {taskinstance.py:3498} INFO - 6 downstream tasks scheduled from follow-on schedule check
+[2025-06-06T10:08:31.751+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

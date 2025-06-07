@@ -1,0 +1,39 @@
+[2025-06-06T10:08:54.861+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:08:56.370+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_landing.tg_salesorderitem.tg_process_salesorderitem.process_salesorderitem scheduled__2025-06-05T00:00:00+00:00 map_index=3 [queued]>
+[2025-06-06T10:08:56.503+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_landing.tg_salesorderitem.tg_process_salesorderitem.process_salesorderitem scheduled__2025-06-05T00:00:00+00:00 map_index=3 [queued]>
+[2025-06-06T10:08:56.509+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:08:56.658+0000] {taskinstance.py:2330} INFO - Executing <Mapped(_PythonDecoratedOperator): tg_salesorderitem.tg_process_salesorderitem.process_salesorderitem> on 2025-06-05 00:00:00+00:00
+[2025-06-06T10:08:56.754+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_landing', 'tg_salesorderitem.tg_process_salesorderitem.process_salesorderitem', 'scheduled__2025-06-05T00:00:00+00:00', '--job-id', '31', '--raw', '--subdir', 'DAGS_FOLDER/etl_landing/dag.py', '--cfg-path', '/tmp/tmp7ie1xg7z', '--map-index', '3']
+[2025-06-06T10:08:56.787+0000] {standard_task_runner.py:91} INFO - Job 31: Subtask tg_salesorderitem.tg_process_salesorderitem.process_salesorderitem
+[2025-06-06T10:08:56.801+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=335) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:08:56.809+0000] {standard_task_runner.py:63} INFO - Started process 362 to run task
+[2025-06-06T10:08:57.517+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_landing.tg_salesorderitem.tg_process_salesorderitem.process_salesorderitem scheduled__2025-06-05T00:00:00+00:00 map_index=3 [running]> on host b168fc67a480
+[2025-06-06T10:08:59.279+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_landing' AIRFLOW_CTX_TASK_ID='tg_salesorderitem.tg_process_salesorderitem.process_salesorderitem' AIRFLOW_CTX_EXECUTION_DATE='2025-06-05T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-06-05T00:00:00+00:00'
+[2025-06-06T10:08:59.340+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:08:59.608+0000] {base.py:84} INFO - Using connection ID 'mysql_default' for task execution.
+[2025-06-06T10:09:00.329+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:09:00.379+0000] {utils.py:114} INFO - Inserted batch 1 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.397+0000] {utils.py:114} INFO - Inserted batch 2 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.451+0000] {utils.py:114} INFO - Inserted batch 3 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.481+0000] {utils.py:114} INFO - Inserted batch 4 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.503+0000] {utils.py:114} INFO - Inserted batch 5 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.577+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:09:00.631+0000] {utils.py:114} INFO - Inserted batch 1 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.689+0000] {utils.py:114} INFO - Inserted batch 2 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.802+0000] {utils.py:114} INFO - Inserted batch 3 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.879+0000] {utils.py:114} INFO - Inserted batch 4 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.960+0000] {utils.py:114} INFO - Inserted batch 5 of 100 rows into lz.salesorderitem
+[2025-06-06T10:09:00.977+0000] {python.py:237} INFO - Done. Returned value was: Inserted SELECT DISTINCT si.*
+            FROM ounass_source.salesorderitem si
+                JOIN salesorder s
+                ON s.id = si.order_id
+            WHERE (s.modified_at >= %(load_range_start_time)s
+                    AND s.modified_at < %(load_range_end_time)s)
+                OR (si.modified_at >= %(load_range_start_time)s
+                    AND si.modified_at < %(load_range_end_time)s)
+            ORDER BY si.item_id, si.order_id
+            LIMIT %(salesorderitem_limit)s OFFSET %(salesorderitem_offset)s rows for parameters {'var_chunk_size': '1000', 'var_page_size': '500', 'var_batch_size': '100', 'var_text_clean_regex': '([[:cntrl:]]|Â|\xa0)+', 'load_range_start_time': datetime.datetime(2021, 7, 6, 0, 0), 'load_range_end_time': datetime.datetime(2021, 7, 7, 0, 0), 'salesorderitem_offset': 3000, 'salesorderitem_limit': 1000}
+[2025-06-06T10:09:00.985+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:09:01.142+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_landing, task_id=tg_salesorderitem.tg_process_salesorderitem.process_salesorderitem, run_id=scheduled__2025-06-05T00:00:00+00:00, map_index=3, execution_date=20250605T000000, start_date=20250606T100856, end_date=20250606T100901
+[2025-06-06T10:09:01.430+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:09:01.471+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

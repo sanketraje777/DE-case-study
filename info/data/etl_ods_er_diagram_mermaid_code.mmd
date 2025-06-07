@@ -1,0 +1,38 @@
+erDiagram
+    CUSTOMER ||--o{ SALESORDER : places
+    SALESORDER ||--o{ SALESORDERITEM : contains
+    SALESORDERITEM }o--|| PRODUCT : refers_to
+
+    CUSTOMER {
+        int id PK
+        varchar first_name
+        varchar last_name
+        varchar email
+        varchar gender
+        text billing_address
+        text shipping_address
+    }
+    SALESORDER {
+        int id PK
+        int customer_id FK
+        varchar order_number
+        datetime created_at
+        datetime modified_at
+        decimal order_total
+        int total_qty_ordered
+    }
+    SALESORDERITEM {
+        int item_id PK
+        int order_id FK
+        int product_id FK
+        int qty_ordered
+        decimal price
+        decimal line_total
+        datetime created_at
+        datetime modified_at
+    }
+    PRODUCT {
+        int product_id PK
+        varchar product_sku
+        varchar product_name
+    }

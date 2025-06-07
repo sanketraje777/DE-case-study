@@ -1,0 +1,46 @@
+flowchart TD
+
+    A[Start DAG] --> B{Chunks}
+    
+    subgraph "Chunk 1"
+        B1_1[Fetch Page 1]
+        B1_2[Fetch Page 2]
+        B1_3[...]
+        
+        B1_1 --> C1_1[Insert Batch 1]
+        B1_1 --> C1_2[Insert Batch 2]
+        
+        B1_2 --> C1_3[Insert Batch 1]
+        B1_2 --> C1_4[Insert Batch 2]
+    end
+
+    subgraph "Chunk 2"
+        B2_1[Fetch Page 1]
+        B2_2[Fetch Page 2]
+        
+        B2_1 --> C2_1[Insert Batch 1]
+        B2_1 --> C2_2[Insert Batch 2]
+
+        B2_2 --> C2_3[Insert Batch 1]
+        B2_2 --> C2_4[Insert Batch 2]
+    end
+
+    subgraph "Chunk N"
+        Bn_1[Fetch Page 1]
+        Bn_2[...]
+
+        Bn_1 --> Cn_1[Insert Batch 1]
+        Bn_1 --> Cn_2[Insert Batch 2]
+    end
+
+    B --> Chunk_1["Process Chunk 1"]
+    B --> Chunk_2["Process Chunk 2"]
+    B --> Chunk_N["Process Chunk N"]
+
+    Chunk_1 --> B1_1
+    Chunk_2 --> B2_1
+    Chunk_N --> Bn_1
+
+    C1_4 --> D[Complete DAG]
+    C2_4 --> D
+    Cn_2 --> D

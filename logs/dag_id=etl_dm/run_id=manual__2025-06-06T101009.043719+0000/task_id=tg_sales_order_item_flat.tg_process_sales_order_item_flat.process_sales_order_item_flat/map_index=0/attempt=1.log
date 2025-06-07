@@ -1,0 +1,335 @@
+[2025-06-06T10:10:16.936+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-06-06T10:10:17.575+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_dm.tg_sales_order_item_flat.tg_process_sales_order_item_flat.process_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 map_index=0 [queued]>
+[2025-06-06T10:10:17.606+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_dm.tg_sales_order_item_flat.tg_process_sales_order_item_flat.process_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 map_index=0 [queued]>
+[2025-06-06T10:10:17.608+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-06-06T10:10:17.641+0000] {taskinstance.py:2330} INFO - Executing <Mapped(_PythonDecoratedOperator): tg_sales_order_item_flat.tg_process_sales_order_item_flat.process_sales_order_item_flat> on 2025-06-06 10:10:09.043719+00:00
+[2025-06-06T10:10:17.656+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=572) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-06-06T10:10:17.658+0000] {standard_task_runner.py:63} INFO - Started process 588 to run task
+[2025-06-06T10:10:17.658+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_dm', 'tg_sales_order_item_flat.tg_process_sales_order_item_flat.process_sales_order_item_flat', 'manual__2025-06-06T10:10:09.043719+00:00', '--job-id', '73', '--raw', '--subdir', 'DAGS_FOLDER/etl_datamart/dag.py', '--cfg-path', '/tmp/tmpsglbixii', '--map-index', '0']
+[2025-06-06T10:10:17.665+0000] {standard_task_runner.py:91} INFO - Job 73: Subtask tg_sales_order_item_flat.tg_process_sales_order_item_flat.process_sales_order_item_flat
+[2025-06-06T10:10:17.772+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_dm.tg_sales_order_item_flat.tg_process_sales_order_item_flat.process_sales_order_item_flat manual__2025-06-06T10:10:09.043719+00:00 map_index=0 [running]> on host b168fc67a480
+[2025-06-06T10:10:18.090+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_dm' AIRFLOW_CTX_TASK_ID='tg_sales_order_item_flat.tg_process_sales_order_item_flat.process_sales_order_item_flat' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T10:10:09.043719+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T10:10:09.043719+00:00'
+[2025-06-06T10:10:18.093+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-06-06T10:10:18.101+0000] {tasks.py:214} INFO - Loading SQL from file: /opt/airflow/sql/postgres_data_warehouse/dm/sales_order_item_flat/dm_process_sales_order_item_flat.sql
+[2025-06-06T10:10:18.149+0000] {tasks.py:221} INFO - processed query: DO $$
+DECLARE
+  clean_pattern TEXT := '([[:cntrl:]]|Â| )+';  -- ([[:cntrl:]]|Â| )+ regex pattern to remove unwanted characters
+BEGIN
+
+  WITH cleaned_raw AS NOT MATERIALIZED (
+    SELECT
+      ri.item_id,
+      ri.order_id,
+      TRIM(REGEXP_REPLACE(so.order_number, clean_pattern, '', 'g')) AS order_number,
+      so.created_at AS order_created_at,
+      so.order_total,
+      so.total_qty_ordered,
+      cust.id AS customer_id,
+      TRIM(
+        REGEXP_REPLACE(cust.first_name || ' ' || cust.last_name, clean_pattern, '', 'g')
+      ) AS customer_name,
+      TRIM(REGEXP_REPLACE(cust.gender, clean_pattern, '', 'g')) AS customer_gender,
+      TRIM(REGEXP_REPLACE(cust.email, clean_pattern, '', 'g')) AS customer_email,
+      prod.product_id,
+      TRIM(REGEXP_REPLACE(prod.product_sku,   clean_pattern, '', 'g')) AS product_sku,
+      TRIM(REGEXP_REPLACE(prod.product_name,  clean_pattern, '', 'g')) AS product_name,
+      ri.price AS item_price,
+      ri.qty_ordered AS item_qty_order,
+      ri.line_total AS item_unit_total,
+      ri.modified_at
+    FROM ods.salesorderitem AS ri        -- ods.salesorderitem
+    JOIN ods.salesorder AS so        -- ods.salesorder
+      ON ri.order_id = so.id
+    JOIN ods.customer AS cust      -- ods.customer
+      ON so.customer_id = cust.id
+    JOIN ods.product AS prod      -- ods.product
+      ON ri.product_id = prod.product_id
+    WHERE ri.item_id               IS NOT NULL
+      AND ri.order_id               IS NOT NULL
+      AND so.order_number           IS NOT NULL
+      AND so.created_at             IS NOT NULL
+      AND so.order_total            IS NOT NULL
+      AND so.order_total::DOUBLE PRECISION >= 0
+      AND so.total_qty_ordered      IS NOT NULL
+      AND so.total_qty_ordered     >= 0
+      AND cust.id                   IS NOT NULL
+      AND cust.first_name           IS NOT NULL
+      AND cust.last_name            IS NOT NULL
+      AND (cust.gender             IS NULL
+           OR TRIM(REGEXP_REPLACE(cust.gender, clean_pattern, '', 'g')) IN ('Female','Male'))
+      AND cust.email                IS NOT NULL
+      AND prod.product_id           IS NOT NULL
+      AND prod.product_sku          IS NOT NULL
+      AND prod.product_name         IS NOT NULL
+      AND ri.price                  IS NOT NULL
+      AND ri.price::DOUBLE PRECISION >= 0
+      AND ri.qty_ordered            IS NOT NULL
+      AND ri.qty_ordered           >= 0
+      AND ri.line_total             IS NOT NULL
+      AND ri.line_total::DOUBLE PRECISION >= 0
+      AND TRIM(REGEXP_REPLACE(so.order_number, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.first_name, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.last_name, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.email, clean_pattern, '', 'g'))::VARCHAR(255) 
+         ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+      AND TRIM(REGEXP_REPLACE(prod.product_sku, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(prod.product_name, clean_pattern, '', 'g')) <> ''
+  ),
+  deduped_items AS NOT MATERIALIZED (
+    SELECT DISTINCT ON (item_id, order_id)
+      item_id,
+      order_id,
+      order_number::VARCHAR(50),
+      order_created_at,
+      order_total::DOUBLE PRECISION,
+      total_qty_ordered,
+      customer_id,
+      customer_name::VARCHAR(200),
+      customer_gender::VARCHAR(10),
+      customer_email::VARCHAR(255),
+      product_id,
+      product_sku::VARCHAR(50),
+      product_name::VARCHAR(255),
+      item_price::DOUBLE PRECISION,
+      item_qty_order,
+      item_unit_total::DOUBLE PRECISION
+    FROM cleaned_raw
+    ORDER BY
+      item_id,
+      order_id,
+      modified_at DESC  -- keep latest modification per (item_id, order_id)
+  )
+  INSERT INTO dm.sales_order_item_flat (
+    item_id, order_id, order_number, order_created_at,
+    order_total, total_qty_ordered, customer_id,
+    customer_name, customer_gender, customer_email,
+    product_id, product_sku, product_name,
+    item_price, item_qty_order, item_unit_total
+  )
+  SELECT
+    item_id, order_id, order_number, order_created_at,
+    order_total, total_qty_ordered, customer_id,
+    customer_name, customer_gender, customer_email,
+    product_id, product_sku, product_name,
+    item_price, item_qty_order, item_unit_total
+  FROM deduped_items;
+
+END $$;, parameters: {'var_text_clean_regex': '([[:cntrl:]]|Â|\xa0)+', 'source_schema': 'ods', 'source_table': ['salesorderitem', 'salesorder', 'customer', 'product'], 'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:18.174+0000] {tasks.py:229} INFO - Split into 1 individual SQL statements
+[2025-06-06T10:10:18.175+0000] {tasks.py:233} INFO - Executing:
+DO $$
+DECLARE
+  clean_pattern TEXT := '([[:cntrl:]]|Â| )+';  -- ([[:cntrl:]]|Â| )+ regex pattern to remove unwanted characters
+BEGIN
+
+  WITH cleaned_raw AS NOT MATERIALIZED (
+    SELECT
+      ri.item_id,
+      ri.order_id,
+      TRIM(REGEXP_REPLACE(so.order_number, clean_pattern, '', 'g')) AS order_number,
+      so.created_at AS order_created_at,
+      so.order_total,
+      so.total_qty_ordered,
+      cust.id AS customer_id,
+      TRIM(
+        REGEXP_REPLACE(cust.first_name || ' ' || cust.last_name, clean_pattern, '', 'g')
+      ) AS customer_name,
+      TRIM(REGEXP_REPLACE(cust.gender, clean_pattern, '', 'g')) AS customer_gender,
+      TRIM(REGEXP_REPLACE(cust.email, clean_pattern, '', 'g')) AS customer_email,
+      prod.product_id,
+      TRIM(REGEXP_REPLACE(prod.product_sku,   clean_pattern, '', 'g')) AS product_sku,
+      TRIM(REGEXP_REPLACE(prod.product_name,  clean_pattern, '', 'g')) AS product_name,
+      ri.price AS item_price,
+      ri.qty_ordered AS item_qty_order,
+      ri.line_total AS item_unit_total,
+      ri.modified_at
+    FROM ods.salesorderitem AS ri        -- ods.salesorderitem
+    JOIN ods.salesorder AS so        -- ods.salesorder
+      ON ri.order_id = so.id
+    JOIN ods.customer AS cust      -- ods.customer
+      ON so.customer_id = cust.id
+    JOIN ods.product AS prod      -- ods.product
+      ON ri.product_id = prod.product_id
+    WHERE ri.item_id               IS NOT NULL
+      AND ri.order_id               IS NOT NULL
+      AND so.order_number           IS NOT NULL
+      AND so.created_at             IS NOT NULL
+      AND so.order_total            IS NOT NULL
+      AND so.order_total::DOUBLE PRECISION >= 0
+      AND so.total_qty_ordered      IS NOT NULL
+      AND so.total_qty_ordered     >= 0
+      AND cust.id                   IS NOT NULL
+      AND cust.first_name           IS NOT NULL
+      AND cust.last_name            IS NOT NULL
+      AND (cust.gender             IS NULL
+           OR TRIM(REGEXP_REPLACE(cust.gender, clean_pattern, '', 'g')) IN ('Female','Male'))
+      AND cust.email                IS NOT NULL
+      AND prod.product_id           IS NOT NULL
+      AND prod.product_sku          IS NOT NULL
+      AND prod.product_name         IS NOT NULL
+      AND ri.price                  IS NOT NULL
+      AND ri.price::DOUBLE PRECISION >= 0
+      AND ri.qty_ordered            IS NOT NULL
+      AND ri.qty_ordered           >= 0
+      AND ri.line_total             IS NOT NULL
+      AND ri.line_total::DOUBLE PRECISION >= 0
+      AND TRIM(REGEXP_REPLACE(so.order_number, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.first_name, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.last_name, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.email, clean_pattern, '', 'g'))::VARCHAR(255) 
+         ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+      AND TRIM(REGEXP_REPLACE(prod.product_sku, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(prod.product_name, clean_pattern, '', 'g')) <> ''
+  ),
+  deduped_items AS NOT MATERIALIZED (
+    SELECT DISTINCT ON (item_id, order_id)
+      item_id,
+      order_id,
+      order_number::VARCHAR(50),
+      order_created_at,
+      order_total::DOUBLE PRECISION,
+      total_qty_ordered,
+      customer_id,
+      customer_name::VARCHAR(200),
+      customer_gender::VARCHAR(10),
+      customer_email::VARCHAR(255),
+      product_id,
+      product_sku::VARCHAR(50),
+      product_name::VARCHAR(255),
+      item_price::DOUBLE PRECISION,
+      item_qty_order,
+      item_unit_total::DOUBLE PRECISION
+    FROM cleaned_raw
+    ORDER BY
+      item_id,
+      order_id,
+      modified_at DESC  -- keep latest modification per (item_id, order_id)
+  )
+  INSERT INTO dm.sales_order_item_flat (
+    item_id, order_id, order_number, order_created_at,
+    order_total, total_qty_ordered, customer_id,
+    customer_name, customer_gender, customer_email,
+    product_id, product_sku, product_name,
+    item_price, item_qty_order, item_unit_total
+  )
+  SELECT
+    item_id, order_id, order_number, order_created_at,
+    order_total, total_qty_ordered, customer_id,
+    customer_name, customer_gender, customer_email,
+    product_id, product_sku, product_name,
+    item_price, item_qty_order, item_unit_total
+  FROM deduped_items;
+
+END $$;
+ with parameters: {'var_text_clean_regex': '([[:cntrl:]]|Â|\xa0)+', 'source_schema': 'ods', 'source_table': ['salesorderitem', 'salesorder', 'customer', 'product'], 'target_schema': 'dm', 'target_table': 'sales_order_item_flat'}
+[2025-06-06T10:10:18.205+0000] {base.py:84} INFO - Using connection ID 'postgres_default' for task execution.
+[2025-06-06T10:10:18.216+0000] {sql.py:470} INFO - Running statement: DO $$
+DECLARE
+  clean_pattern TEXT := '([[:cntrl:]]|Â| )+';  -- ([[:cntrl:]]|Â| )+ regex pattern to remove unwanted characters
+BEGIN
+
+  WITH cleaned_raw AS NOT MATERIALIZED (
+    SELECT
+      ri.item_id,
+      ri.order_id,
+      TRIM(REGEXP_REPLACE(so.order_number, clean_pattern, '', 'g')) AS order_number,
+      so.created_at AS order_created_at,
+      so.order_total,
+      so.total_qty_ordered,
+      cust.id AS customer_id,
+      TRIM(
+        REGEXP_REPLACE(cust.first_name || ' ' || cust.last_name, clean_pattern, '', 'g')
+      ) AS customer_name,
+      TRIM(REGEXP_REPLACE(cust.gender, clean_pattern, '', 'g')) AS customer_gender,
+      TRIM(REGEXP_REPLACE(cust.email, clean_pattern, '', 'g')) AS customer_email,
+      prod.product_id,
+      TRIM(REGEXP_REPLACE(prod.product_sku,   clean_pattern, '', 'g')) AS product_sku,
+      TRIM(REGEXP_REPLACE(prod.product_name,  clean_pattern, '', 'g')) AS product_name,
+      ri.price AS item_price,
+      ri.qty_ordered AS item_qty_order,
+      ri.line_total AS item_unit_total,
+      ri.modified_at
+    FROM ods.salesorderitem AS ri        -- ods.salesorderitem
+    JOIN ods.salesorder AS so        -- ods.salesorder
+      ON ri.order_id = so.id
+    JOIN ods.customer AS cust      -- ods.customer
+      ON so.customer_id = cust.id
+    JOIN ods.product AS prod      -- ods.product
+      ON ri.product_id = prod.product_id
+    WHERE ri.item_id               IS NOT NULL
+      AND ri.order_id               IS NOT NULL
+      AND so.order_number           IS NOT NULL
+      AND so.created_at             IS NOT NULL
+      AND so.order_total            IS NOT NULL
+      AND so.order_total::DOUBLE PRECISION >= 0
+      AND so.total_qty_ordered      IS NOT NULL
+      AND so.total_qty_ordered     >= 0
+      AND cust.id                   IS NOT NULL
+      AND cust.first_name           IS NOT NULL
+      AND cust.last_name            IS NOT NULL
+      AND (cust.gender             IS NULL
+           OR TRIM(REGEXP_REPLACE(cust.gender, clean_pattern, '', 'g')) IN ('Female','Male'))
+      AND cust.email                IS NOT NULL
+      AND prod.product_id           IS NOT NULL
+      AND prod.product_sku          IS NOT NULL
+      AND prod.product_name         IS NOT NULL
+      AND ri.price                  IS NOT NULL
+      AND ri.price::DOUBLE PRECISION >= 0
+      AND ri.qty_ordered            IS NOT NULL
+      AND ri.qty_ordered           >= 0
+      AND ri.line_total             IS NOT NULL
+      AND ri.line_total::DOUBLE PRECISION >= 0
+      AND TRIM(REGEXP_REPLACE(so.order_number, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.first_name, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.last_name, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(cust.email, clean_pattern, '', 'g'))::VARCHAR(255) 
+         ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+      AND TRIM(REGEXP_REPLACE(prod.product_sku, clean_pattern, '', 'g')) <> ''
+      AND TRIM(REGEXP_REPLACE(prod.product_name, clean_pattern, '', 'g')) <> ''
+  ),
+  deduped_items AS NOT MATERIALIZED (
+    SELECT DISTINCT ON (item_id, order_id)
+      item_id,
+      order_id,
+      order_number::VARCHAR(50),
+      order_created_at,
+      order_total::DOUBLE PRECISION,
+      total_qty_ordered,
+      customer_id,
+      customer_name::VARCHAR(200),
+      customer_gender::VARCHAR(10),
+      customer_email::VARCHAR(255),
+      product_id,
+      product_sku::VARCHAR(50),
+      product_name::VARCHAR(255),
+      item_price::DOUBLE PRECISION,
+      item_qty_order,
+      item_unit_total::DOUBLE PRECISION
+    FROM cleaned_raw
+    ORDER BY
+      item_id,
+      order_id,
+      modified_at DESC  -- keep latest modification per (item_id, order_id)
+  )
+  INSERT INTO dm.sales_order_item_flat (
+    item_id, order_id, order_number, order_created_at,
+    order_total, total_qty_ordered, customer_id,
+    customer_name, customer_gender, customer_email,
+    product_id, product_sku, product_name,
+    item_price, item_qty_order, item_unit_total
+  )
+  SELECT
+    item_id, order_id, order_number, order_created_at,
+    order_total, total_qty_ordered, customer_id,
+    customer_name, customer_gender, customer_email,
+    product_id, product_sku, product_name,
+    item_price, item_qty_order, item_unit_total
+  FROM deduped_items;
+
+END $$;, parameters: None
+[2025-06-06T10:10:18.473+0000] {python.py:237} INFO - Done. Returned value was: [None]
+[2025-06-06T10:10:18.474+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-06-06T10:10:18.511+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_dm, task_id=tg_sales_order_item_flat.tg_process_sales_order_item_flat.process_sales_order_item_flat, run_id=manual__2025-06-06T10:10:09.043719+00:00, map_index=0, execution_date=20250606T101009, start_date=20250606T101017, end_date=20250606T101018
+[2025-06-06T10:10:18.559+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-06-06T10:10:18.606+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-06-06T10:10:18.610+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
