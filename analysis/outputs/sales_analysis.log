@@ -1,0 +1,72 @@
+2025-06-07 00:27:27 — sales_analysis — INFO — 
+Logger initialized. Starting sales analysis pipeline.
+2025-06-07 00:27:27 — sales_analysis — INFO — 
+Successfully connected to the database.
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+Data validation passed. No issues found.
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+DataFrame shape: (7684, 16)
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+DataFrame columns:
+item_id                            int64
+order_id                           int64
+order_number                      object
+order_created_at     datetime64[ns, UTC]
+order_total                      float64
+total_qty_ordered                  int64
+customer_id                        int64
+customer_name                     object
+customer_gender                   object
+customer_email                    object
+product_id                         int64
+product_sku                       object
+product_name                      object
+item_price                       float64
+item_qty_order                     int64
+item_unit_total                  float64
+dtype: object
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+Numeric summary statistics:
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+Numeric summary statistics (excluding rows with any zero):
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+Unique orders: 4787
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+Unique customers: 54
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+Unique products: 4296
+2025-06-07 00:27:28 — sales_analysis — INFO — 
+Customer gender distribution:
+customer_gender
+Female    7152
+Male       532
+Name: count, dtype: int64
+2025-06-07 00:27:29 — sales_analysis — INFO — 
+Max order date in data: 2021-08-29 00:00:00+00:00
+2025-06-07 00:27:29 — sales_analysis — INFO — 
+Top 10 Customers by Number of Orders (Frequency):
+2025-06-07 00:27:30 — sales_analysis — INFO — 
+Top 10 Customers by Total Purchase (Monetary):
+2025-06-07 00:27:30 — sales_analysis — INFO — 
+Bins used: [0, 100, 200, 400, 500, 545]
+2025-06-07 00:27:30 — sales_analysis — INFO — 
+              segment  count
+1           Champions     11
+2     Loyal Customers     11
+0  Potential Loyalist     24
+3     Needs Attention      8
+4             At Risk      0
+2025-06-07 00:27:30 — sales_analysis — INFO — 
+Top 5 Customers by Customer Lifetime Value (CLTV) score:
+2025-06-07 00:27:30 — sales_analysis — INFO — 
+Top 10 Products by Quantity Sold:
+2025-06-07 00:27:31 — sales_analysis — INFO — 
+Top 10 Products by Revenue:
+2025-06-07 00:27:33 — sales_analysis — INFO — 
+Cleaned data saved to Parquet: ./outputs\sales_order_item_flat_cleaned.parquet
+2025-06-07 00:27:33 — sales_analysis — INFO — 
+RFM data saved to CSV: ./outputs\customer_rfm.csv
+2025-06-07 00:27:33 — sales_analysis — INFO — 
+Monthly sales summary saved to CSV: ./outputs\sales_monthly.csv
+2025-06-07 00:27:33 — sales_analysis — INFO — 
+Weekly sales summary saved to CSV: ./outputs\sales_weekly.csv
