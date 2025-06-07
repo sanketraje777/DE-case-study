@@ -1,8 +1,11 @@
+jupyterlab
 pandas
 sqlalchemy
 psycopg2-binary
 matplotlib
 seaborn
+pyarrow
+fastparquet
 scikit-learn
 ydata-profiling
 ipywidgets
