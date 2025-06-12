@@ -1,0 +1,6 @@
+apache-airflow==2.9.1
+apache-airflow-providers-mysql
+apache-airflow-providers-postgres
+pandas
+mysqlclient
+psycopg2-binary
